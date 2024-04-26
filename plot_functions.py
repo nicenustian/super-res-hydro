@@ -87,8 +87,8 @@ def plot_skewers(output_dir, epoch, quantities, data, fake, box_sizes,
         fig, ax = plt.subplots(num_img*boxes*2, 1, figsize=(28, 4*num_img*boxes*2))      
         plt.subplots_adjust(wspace=0.0, hspace=0.0)
         
-        index = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=False)
-        index_fake = np.random.choice(batch_size, num_img, replace=False)
+        index = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=True)
+        index_fake = np.random.choice(batch_size, num_img, replace=True)
     
         for bi, box_size in enumerate(box_sizes):
             for i, (ireal, ifake) in enumerate(zip(index, index_fake)):
@@ -157,8 +157,8 @@ def plot_slice(output_dir, epoch, keys_list, data, fake, box_sizes,
     biggest_box_size = np.max(box_sizes)
     biggest_box_factor = np.int32(biggest_box_size/np.min(box_sizes))
     
-    indices = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=False)
-    fake_indices = np.random.choice(batch_size, num_img, replace=False)
+    indices = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=True)
+    fake_indices = np.random.choice(batch_size, num_img, replace=True)
 
     
     for ki, key in enumerate(keys_list):
