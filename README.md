@@ -6,7 +6,7 @@ Generate super resolution one dimensional fields using Multiscale Wasserstein Ge
 The Hydrodynamical Simulations are limited in terms of number of particles/cells can used to represent a part of Universe. One way is to simulate different volumes of Universe with same number of particles. Later, using MS-WGAN-GP to paint the properties of smaller volumes onto larger all with same cells/particles.  However, we need to have these fields with similar statistical properties at different volumnes. Therefore, we empoly statistical metrics such as power spectrum and PDF to converge at different resolutions. Below we have shown the convergence of these metrics and the qunatities during training (1000 epochs). The training data is from simulations with Volumes 160Mpc/h, 80Mpc/h and 40Mpc/h all with same particles of 2048^3.  
 
 
-```command
+``` command
 python main.py --epochs 1000 --lr 1e-4 --output_dir ml_output --dataset_dir dataset 
 ```
 
@@ -29,7 +29,7 @@ https://github.com/nicenustian/super-res-hydro/assets/111900566/c34d61ac-4429-4e
 
 Please provide the one dimensional fields for each simulation in dataset_dir folder. Each file should be either .npy or .hdf5. The field name's should be output as dictionary, see example below. Each file is simulation ran at particular volume. Please make sure the code reads them in order of lowest to highest resolution. THe order of fields read is displayed in the start. If it is not read in order rename files such that file name as numbers with starting name as file string to filter files in a given folder, such as model_train_1.py, moldel_train_2.py... Here model_train_1.py is lowest resoluton file. Eeach file half the volume of the preceeding file, where number of particles and cells are kept the same. Default code take three simulations. 
 
-```python
+``` python
     # Save multiple named arrays to the same file
     # each field shape  # of examples x # pixels
     data_dict = {'density': density, 'temp': temp, 'vpec': vpec, 'nHI' : nHI}
@@ -90,7 +90,7 @@ srun -u python main.py --epochs 1000
 
 Please adjust layers, filters and stages for Discriminator/Generartor using dis_filters, dis_scales, gen_filters and gen_scales lists in the main.py shown below. The default discrimnator has three down sampling before Dense stage. The dafult Generator has two outputs stages each with 3 convolutional layers with provided number of filters. The length of list gives the number of stages of upsampling for Generator. The first simulation acts as input if the Latent is False (which is default). Otheriwse, the networks samples from Gaussian random distribution and uses the other networks with three outputs stages for Generator.  
 
-```python
+``` python
 
     dis_filters = [[64, 128, 256]]
     dis_scales = [[2,2,2]]
