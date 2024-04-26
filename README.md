@@ -83,7 +83,7 @@ module load keras/2.9.0
 module load tensorboard/2.8.0
 module load tensorflow-probability/0.14.1
 
-srun -u python main.py --epochs 1000
+srun -u python main.py --epochs 1000 --latent True
 ```
 
 ## The Model
