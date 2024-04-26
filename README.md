@@ -28,6 +28,7 @@ Please provide the skewers for each simulation in dataset_dir folder. Each file 
 
 ```python
     # Save multiple named arrays to the same file
+    # each field shape  # of examples x # pixels
     data_dict = {'density': density, 'temp': temp, 'vpec': vpec, 'nHI' : nHI}
 
     save_file = dir_output+'model_test.npy'
