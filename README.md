@@ -16,12 +16,15 @@ https://github.com/nicenustian/super-res-hydro/assets/111900566/f58a51c7-0264-4c
 ## PDF of one dimensional fields
 https://github.com/nicenustian/super-res-hydro/assets/111900566/16708ebb-2e42-42db-b7e7-999679c8e983
 
+## velocities
+https://github.com/nicenustian/super-res-hydro/assets/111900566/6c23eb39-de89-4ecd-9542-f5f8b08e7fde
 
 ## gas density field
 https://github.com/nicenustian/super-res-hydro/assets/111900566/c82eb02e-63f9-489b-ae31-91c431557392
 
 ## temp field
 https://github.com/nicenustian/super-res-hydro/assets/111900566/c34d61ac-4429-4ee4-af27-c72eb59fbb03
+
 
 
 Please provide the skewers for each simulation in dataset_dir folder. Each file should be either .npy or .hdf5. The field name's should be output as dictionary, see example below
