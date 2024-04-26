@@ -90,7 +90,7 @@ srun -u python main.py --epochs 1000
 
 Please adjust layers, filters and stages for Discriminator/Generartor using dis_filters, dis_scales, gen_filters and gen_scales lists in the main.py shown below. The default discrimnator has three down sampling before Dense stage. The dafult Generator has two outputs stages each with 3 convolutional layers with provided number of filters. The length of list gives the number of stages of upsampling for Generator. The first simulation acts as input if the Latent is False (which is default). Otheriwse, the networks samples from Gaussian random distribution and uses the other networks with three outputs stages for Generator.  
 
-```python
+```ruby
 
     dis_filters = [[64, 128, 256]]
     dis_scales = [[2,2,2]]
@@ -104,6 +104,5 @@ Please adjust layers, filters and stages for Discriminator/Generartor using dis_
         gen_scales = [[2,2,2], [2,1,1], [2,1,1]]        
         latent_str = '_latent'+str(latent_dim)
     
-
 ```
 
