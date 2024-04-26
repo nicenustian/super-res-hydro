@@ -27,7 +27,7 @@ https://github.com/nicenustian/super-res-hydro/assets/111900566/c34d61ac-4429-4e
 
 
 
-Please provide the skewers for each simulation in dataset_dir folder. Each file should be either .npy or .hdf5. The field name's should be output as dictionary, see example below
+Please provide the one dimensional fields for each simulation in dataset_dir folder. Each file should be either .npy or .hdf5. The field name's should be output as dictionary, see example below. Each file is simulation ran at particular volume. Please make sure the code reads them in order of lowest to highest resolution. THe order of fields read is displayed in the start. If it is not read in order rename files such that file name as numbers with starting name as file string to filter files in a given folder, such as model_train_1.py, moldel_train_2.py... Here model_train_1.py is lowest resoluton file. Eeach file half the volume of the preceeding file, where number of particles and cells are kept the same. Default code take three simulations. 
 
 ```python
     # Save multiple named arrays to the same file
