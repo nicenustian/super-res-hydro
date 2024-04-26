@@ -39,3 +39,49 @@ Please provide the one dimensional fields for each simulation in dataset_dir fol
     with open(save_file, 'wb') as f:
           np.savez(f, **data_dict)
 ```
+
+
+
+## batch script to run on HPC raven
+```command
+#!/bin/bash -l
+#SBATCH -o ./out.%j
+#SBATCH -e ./out.err.%j
+#SBATCH -D ./
+#SBATCH -J train_gpu
+#SBATCH --ntasks=1
+#SBATCH --constraint="gpu"
+#
+# --- default case: use a single GPU on a shared node ---
+##SBATCH --gres=gpu:a100:1
+##SBATCH --cpus-per-task=18
+##SBATCH --mem=125000
+#
+# --- uncomment to use 2 GPUs on a shared node ---
+##SBATCH --gres=gpu:a100:2
+##SBATCH --cpus-per-task=36
+##SBATCH --mem=250000
+
+# --- uncomment to use 4 GPUs on a full node ---
+#SBATCH --gres=gpu:a100:4
+#SBATCH --cpus-per-task=72
+#SBATCH --mem=500000
+#
+#SBATCH --mail-type=none
+#SBATCH --mail-user=userid@example.mpg.de
+#SBATCH --time=12:00:00
+
+module purge
+module load intel/21.3.0
+module load anaconda/3/2021.11
+module load tensorflow/cpu/2.9.2
+module load keras-preprocessing/1.1.2
+module load cuda/11.6
+module load cudnn/8.4.1
+module load tensorflow/gpu-cuda-11.6/2.9.0
+module load keras/2.9.0
+module load tensorboard/2.8.0
+module load tensorflow-probability/0.14.1
+
+srun -u python main.py --epochs 1000
+```
