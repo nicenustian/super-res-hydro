@@ -11,19 +11,23 @@ python main.py --epochs 1000 --lr 1e-4 --output_dir ml_output --dataset_dir data
 ```
 
 ## Power spectrum of one dimensional fields
-https://github.com/nicenustian/super-res-hydro/assets/111900566/f58a51c7-0264-4c58-b20f-b60ff61c842b
+https://github.com/nicenustian/super-res-hydro/assets/111900566/e3191ca6-dfcd-41e3-9de9-a1d885951a55
+
 
 ## PDF of one dimensional fields
-https://github.com/nicenustian/super-res-hydro/assets/111900566/16708ebb-2e42-42db-b7e7-999679c8e983
+https://github.com/nicenustian/super-res-hydro/assets/111900566/97c6aed1-e22a-43b3-bc4c-44b806eb969a
+
 
 ## velocities
-https://github.com/nicenustian/super-res-hydro/assets/111900566/6c23eb39-de89-4ecd-9542-f5f8b08e7fde
+https://github.com/nicenustian/super-res-hydro/assets/111900566/ce323271-c859-4ef0-99d5-2ed16937608d
+
 
 ## gas density field
-https://github.com/nicenustian/super-res-hydro/assets/111900566/c82eb02e-63f9-489b-ae31-91c431557392
+https://github.com/nicenustian/super-res-hydro/assets/111900566/edfed7d5-d1b5-40f7-abfc-2a536d19b715
+
 
 ## temp field
-https://github.com/nicenustian/super-res-hydro/assets/111900566/c34d61ac-4429-4ee4-af27-c72eb59fbb03
+https://github.com/nicenustian/super-res-hydro/assets/111900566/cdcb248e-d0ce-452e-b1fb-74b195962bdd
 
 
 
