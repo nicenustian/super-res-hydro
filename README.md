@@ -8,11 +8,11 @@ The Hydrodynamical Simulations are limited in terms of number of particles/cells
 
 ## Lessons Learned
 
-1. Keep learning rate around 1e-4 and epoichs more than 500 for higher resolution (for exmaple 2048 pixels) 1 dimensional spectra for better convergence.
-2. Adam optimized does a good job but RMSprop is good alternative as well and less prone to outliers
-3. Add power spectrum and PDF losses to both discrinator and Generator
-4. Initially the learning is limited by adverserial losses but in later stages by PDF and Power spectrum losses contribution, which is very specific information to generate one dimensional data. 
-
+1. Keep learning rate around 1e-4 and epochs more than 500 for higher resolution (for exmaple 2048 pixels) 1 dimensional spectra for better convergence.
+2. Adam optimized does a good job but RMSprop is good alternative as well and less prone to outliers.
+3. Add power spectrum and PDF losses to both Discriminator and Generator.
+4. Initially the learning is limited by adverserial losses but in later stages by PDF and Power spectrum losses contribution, which is very important to generate one dimensional data with the statistical properties. 
+5. There is no need to train Disciminator for more epochs, you can train Discrimnator and Generator together.
 
 ``` command
 python main.py --epochs 1000 --lr 1e-4 --output_dir ml_output --dataset_dir dataset 
