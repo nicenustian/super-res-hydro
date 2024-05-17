@@ -27,8 +27,7 @@ def train_model(
         latent_dim=32, 
         dis_filters=[[128, 256]], 
         dis_scales=[[2,2]], 
-        gen_filters=[[256, 256, 256], 
-                     [128, 128, 128]], 
+        gen_filters=[[256], [128]], 
         gen_scales=[[2], [2]],
         load_model=False, 
         seed=1234
