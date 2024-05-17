@@ -12,15 +12,27 @@ import pickle
 
 ###############################################################################
 
-def train_model(output_dir, datasets, data, keys_list, examples=512, 
-                    box_sizes=[160,80,40], original_dim=2048, latent=False, 
-                    batch_size_per_replica=32, epochs=1000, 
-                    lr=1e-4, latent_dim=32, 
-                    dis_filters=[[64, 128, 256]], dis_scales=[[2,2,2]], 
-                    gen_filters=[[256, 128, 64], [64, 32, 32]], 
-                    gen_scales=[[2,1,1], [2,1,1]],
-                    image=False, load_model=False,
-                    seed=1234):
+def train_model(
+        output_dir, 
+        datasets, 
+        data, 
+        keys_list, 
+        examples=512, 
+        box_sizes=[160, 80, 40], 
+        original_dim=2048, 
+        latent=False, 
+        batch_size_per_replica=32, 
+        epochs=1000, 
+        lr=1e-4, 
+        latent_dim=32, 
+        dis_filters=[[128, 256]], 
+        dis_scales=[[2,2]], 
+        gen_filters=[[256, 256, 256], 
+                     [128, 128, 128]], 
+        gen_scales=[[2], [2]],
+        load_model=False, 
+        seed=1234
+        ):
 
     
     mirrored_strategy = tf.distribute.MirroredStrategy()
@@ -68,7 +80,7 @@ def train_model(output_dir, datasets, data, keys_list, examples=512,
                                           scales_list=dis_scales,
                                           initializer=initializer,
                                           num_features=num_features,
-                                          image=image)
+                                          )
             
         generator = Generator(original_dim=original_dim,
                                   filters_list=gen_filters,
@@ -76,15 +88,14 @@ def train_model(output_dir, datasets, data, keys_list, examples=512,
                                   initializer=initializer,
                                   num_features=num_features, 
                                   latent=latent, 
-                                  image=image)
+                                  )
     
         gan = MSWGAN(discriminator=discriminator, 
                      generator=generator,
                     latent_dim=latent_dim, 
                     box_sizes=box_sizes,
                     original_dim=original_dim,
-                    latent=latent,
-                    image=image
+                    latent=latent
                     )
     
     datasets = mirrored_strategy.experimental_distribute_dataset(
@@ -111,15 +122,18 @@ def train_model(output_dir, datasets, data, keys_list, examples=512,
             gan.load_weights(output_dir+'best_model').expect_partial()
     
     
-    gan_monitor = GANMonitor(output_dir, data, original_dim,
+    gan_monitor = GANMonitor(
+        output_dir, data, original_dim,
         latent_dim, latent, num_features,
-        box_sizes, keys_list, batch_size, image,
-        examples=examples_to_plot)
+        box_sizes, keys_list, batch_size,
+        examples=examples_to_plot
+        )
     
     
-    history = gan.fit(datasets, epochs=epochs, 
-                          steps_per_epoch=steps_per_epoch, 
-                            callbacks=[gan_monitor]
+    history = gan.fit(
+        datasets, epochs=epochs, 
+        steps_per_epoch=steps_per_epoch, 
+        callbacks=[gan_monitor]
                             )
     
     #saving the history into a file
