@@ -1,16 +1,24 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from utility_functions import  get_pdf, get_ps_fft, get_ps_fft2d, scale_fake_examples
-from plot_functions import plot_pdf, plot_ps, plot_slice, plot_skewers
+from utility_functions import  get_pdf, get_ps_fft, scale_fake_examples
+from plot_functions import plot_pdf, plot_ps, plot_skewers
 import numpy as np
 
 
 class GANMonitor(tf.keras.callbacks.Callback):
     
-    def __init__(self, output_dir, real_list,
-                 original_dim, latent_dim, latent,
-                 num_features, box_sizes, keys_list,
-                 batch_size, image, examples=1):
+    def __init__(self, 
+                 output_dir, 
+                 real_list,
+                 original_dim, 
+                 latent_dim, 
+                 latent,
+                 num_features, 
+                 box_sizes, 
+                 keys_list,
+                 batch_size, 
+                 examples=1
+                 ):
         
         self.num_img = examples
         self.latent_dim = latent_dim
@@ -23,7 +31,6 @@ class GANMonitor(tf.keras.callbacks.Callback):
         self.box_sizes = box_sizes
         self.keys_list = keys_list
         self.batch_size = batch_size
-        self.image = image
         self.last_loss_saved = np.Infinity
         self.losses = []
         
@@ -40,11 +47,11 @@ class GANMonitor(tf.keras.callbacks.Callback):
                     
         alphas = [.8, .8, .8, .8]
         colors_lines = ['black', 'red', 'orange']
-        self.losses.append(logs["total_g_loss"])
+        self.losses.append(logs["d_loss"])
         
         num_to_generate = self.batch_size
         
-        # If the batch size for fake_images is greater, randomly select a subset
+        # If the batch size for fake_data is greater, randomly select a subset
         indices = tf.random.shuffle(tf.range(tf.shape(self.real_list[0])[0]))[:num_to_generate]
         real_sample = tf.gather(self.real_list[0], indices)
         
@@ -57,49 +64,35 @@ class GANMonitor(tf.keras.callbacks.Callback):
         
         if not self.latent:
             fake_list.insert(0, self.real_list[0])
-                
-        # print('ganmonitor real/fake output shapes')
-        # for pi in range(len(fake_list)):
-        #       print(fake_list[pi].shape, real[pi].shape, 
-        #             fake_list[pi], real[pi])
+
+        ############################Plot skewers########################
         
-        ############################Plot skewers/slices########################
-        
-        if self.image:
-            plot_slice(self.output_dir, epoch, self.keys_list, self.real_list,
-                        fake_list, self.box_sizes, self.num_features, self.num_img,
-                        self.latent)
-        else:
-            plot_skewers(self.output_dir, epoch, self.keys_list, self.real_list,
-                         fake_list, self.box_sizes, self.num_features, self.num_img, 
-                         self.latent)
+        plot_skewers(self.output_dir, epoch, self.keys_list, self.real_list,
+                     fake_list, self.box_sizes, self.num_features, self.num_img, 
+                     self.latent)
        
         #########################Plot power spectrum###########################
         
         fig2, ax2 = plt.subplots(self.num_features, 1, figsize=(14, self.num_features*4))
         fig2.subplots_adjust(wspace=0., hspace=0.)
         
-        fake_list_reshaped = scale_fake_examples(fake_list, self.original_dim, self.batch_size, self.image)
+        fake_list_reshaped = scale_fake_examples(fake_list, self.original_dim, self.batch_size)
 
         for index in range(len(self.box_sizes)):
             
             indices_array = np.random.choice(self.real_list[index].shape[0], 
                                              self.batch_size, replace=False)
             
-            if self.image:
-                ps_real = get_ps_fft2d(
-                    self.real_list[index][indices_array], self.box_sizes[index])
-                
-                if index < len(fake_list):
-                    ps_fake = get_ps_fft2d(fake_list_reshaped[index], self.box_sizes[index])
-
-            else:
-                ps_real = get_ps_fft(self.real_list[index][indices_array], self.box_sizes[index])
-                if index < len(fake_list):
-                    ps_fake = get_ps_fft(fake_list_reshaped[index], self.box_sizes[index])
+            ps_real = get_ps_fft(self.real_list[index][indices_array], self.box_sizes[index])
+            if index < len(fake_list):
+                ps_fake = get_ps_fft(fake_list_reshaped[index], self.box_sizes[index])
             
-            plot_ps(fig2, ax2, self.keys_list, ps_real, self.num_features, '-',  alphas[index],
-                    str(np.int32(self.box_sizes[index])) + r'${\rm Mpc/h}$', colors_lines[index])
+            plot_ps(
+                fig2, ax2, self.keys_list, ps_real, 
+                self.num_features, '-',  alphas[index],
+                str(np.int32(self.box_sizes[index])) + \
+                r'${\rm Mpc/h}$', colors_lines[index]
+                )
 
 
             if index < len(fake_list):
@@ -138,7 +131,7 @@ class GANMonitor(tf.keras.callbacks.Callback):
 
 
         # ignore initial epochs as WGAN is not stable
-        if logs is not None and epoch>200:
+        if logs is not None and epoch>50:
             #if self.has_stabilized(self.losses):
                 #closer to zero the better
                 if np.abs(self.last_loss_saved) > np.abs(self.losses[-1]):
