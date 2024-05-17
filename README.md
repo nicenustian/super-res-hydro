@@ -11,23 +11,20 @@ python main.py --epochs 1000 --lr 1e-4 --output_dir ml_output --dataset_dir data
 ```
 
 ## Power spectrum of one dimensional fields
-https://github.com/nicenustian/super-res-hydro/assets/111900566/e3191ca6-dfcd-41e3-9de9-a1d885951a55
-
+https://github.com/nicenustian/super-res-hydro/assets/111900566/0e0f5a70-54c6-4cd7-960a-3aa2aeb4e3b8
 
 ## PDF of one dimensional fields
-https://github.com/nicenustian/super-res-hydro/assets/111900566/97c6aed1-e22a-43b3-bc4c-44b806eb969a
-
+https://github.com/nicenustian/super-res-hydro/assets/111900566/99e0421a-6212-4322-9fa6-88ad47e25f95
 
 ## velocities
-https://github.com/nicenustian/super-res-hydro/assets/111900566/ce323271-c859-4ef0-99d5-2ed16937608d
-
+https://github.com/nicenustian/super-res-hydro/assets/111900566/6a95ffc3-c257-4459-b04c-01c796bd8a7b
 
 ## gas density field
-https://github.com/nicenustian/super-res-hydro/assets/111900566/edfed7d5-d1b5-40f7-abfc-2a536d19b715
-
+https://github.com/nicenustian/super-res-hydro/assets/111900566/18fb8fa5-ca0f-4fee-a5e9-2d863fccef7c
 
 ## temp field
-https://github.com/nicenustian/super-res-hydro/assets/111900566/cdcb248e-d0ce-452e-b1fb-74b195962bdd
+https://github.com/nicenustian/super-res-hydro/assets/111900566/c41c63de-7411-4060-853a-8a00f4b50839
+
 
 
 
@@ -57,20 +54,10 @@ Please provide the one dimensional fields for each simulation in dataset_dir fol
 #SBATCH --constraint="gpu"
 #
 # --- default case: use a single GPU on a shared node ---
-##SBATCH --gres=gpu:a100:1
-##SBATCH --cpus-per-task=18
-##SBATCH --mem=125000
-#
-# --- uncomment to use 2 GPUs on a shared node ---
-##SBATCH --gres=gpu:a100:2
-##SBATCH --cpus-per-task=36
-##SBATCH --mem=250000
+#SBATCH --gres=gpu:a100:1
+#SBATCH --cpus-per-task=18
+#SBATCH --mem=125000
 
-# --- uncomment to use 4 GPUs on a full node ---
-#SBATCH --gres=gpu:a100:4
-#SBATCH --cpus-per-task=72
-#SBATCH --mem=500000
-#
 #SBATCH --mail-type=none
 #SBATCH --mail-user=userid@example.mpg.de
 #SBATCH --time=12:00:00
@@ -88,25 +75,5 @@ module load tensorboard/2.8.0
 module load tensorflow-probability/0.14.1
 
 srun -u python main.py --epochs 1000 --latent True
-```
-
-## The Model
-
-Please adjust layers, filters and stages for Discriminator/Generartor using dis_filters, dis_scales, gen_filters and gen_scales lists in the main.py shown below. The default discrimnator has three down sampling before Dense stage. The dafult Generator has two outputs stages each with 3 convolutional layers with provided number of filters. The length of list gives the number of stages of upsampling for Generator. The first simulation acts as input if the Latent is False (which is default). Otheriwse, the networks samples from Gaussian random distribution and uses the other networks with three outputs stages for Generator.  
-
-``` python
-
-    dis_filters = [[64, 128, 256]]
-    dis_scales = [[2,2,2]]
-    
-    if not args.latent:
-        latent_str = ''
-        gen_filters =  [[256, 128, 64], [64, 32, 32]]
-        gen_scales = [[2,1,1], [2,1,1]]
-    else:
-        gen_filters = [[256, 256, 128], [128, 64, 64], [32, 32, 32]]
-        gen_scales = [[2,2,2], [2,1,1], [2,1,1]]        
-        latent_str = '_latent'+str(latent_dim)
-    
 ```
 
