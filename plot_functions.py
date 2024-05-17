@@ -69,8 +69,11 @@ def plot_ps(fig, ax, keys_list, pp, num_features, linestyle='-', alpha=1.,
         
     
     
-def plot_skewers(output_dir, epoch, quantities, data, fake, box_sizes, 
-                 num_features, num_img, latent):
+def plot_skewers(
+        output_dir, epoch, quantities, 
+        data, fake, box_sizes, 
+        num_features, num_img, latent
+        ):
     
     if not latent:
         batch_size = fake[1].shape[0]
@@ -87,8 +90,8 @@ def plot_skewers(output_dir, epoch, quantities, data, fake, box_sizes,
         fig, ax = plt.subplots(num_img*boxes*2, 1, figsize=(28, 4*num_img*boxes*2))      
         plt.subplots_adjust(wspace=0.0, hspace=0.0)
         
-        index = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=True)
-        index_fake = np.random.choice(batch_size, num_img, replace=True)
+        index = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=False)
+        index_fake = np.random.choice(batch_size, num_img, replace=False)
     
         for bi, box_size in enumerate(box_sizes):
             for i, (ireal, ifake) in enumerate(zip(index, index_fake)):
@@ -140,91 +143,6 @@ def plot_skewers(output_dir, epoch, quantities, data, fake, box_sizes,
         plt.tight_layout()
         plt.savefig(output_dir+quantity+'_skewers_epoch'+str(epoch+1)+'.jpg')
         plt.close()
-
-
-def plot_slice(output_dir, epoch, keys_list, data, fake, box_sizes, 
-               num_features, num_img, latent):
-    
-    cmaps = ["cubehelix", "viridis", "jet", "bwr", "bwr", "bwr"]
-    
-        
-    if not latent:
-        batch_size = fake[1].shape[0]
-    else:
-        batch_size = fake[0].shape[0]
-        
-    ##boxes = len(box_sizes)
-    biggest_box_size = np.max(box_sizes)
-    biggest_box_factor = np.int32(biggest_box_size/np.min(box_sizes))
-    
-    indices = np.random.choice(data[0].shape[0]-biggest_box_factor, num_img, replace=True)
-    fake_indices = np.random.choice(batch_size, num_img, replace=True)
-
-    
-    for ki, key in enumerate(keys_list):
-                            
-        fig, ax = plt.subplots(num_img*2, len(box_sizes), 
-                               figsize=(len(box_sizes)*6, num_img*10))        
-        plt.subplots_adjust(wspace=0.0, hspace=0.05)
-
-        for li, index in enumerate(indices):            
-            for bi, box_size in enumerate(box_sizes):
-                
-                ax_usr = ax[li,bi] if len(box_sizes)>1 else ax[li]
-                ax_usr_fake = ax[li+num_img,bi] if len(box_sizes)>1 else ax[li+num_img]
-    
-                ax_usr.imshow(data[bi][index,...,ki],
-                              cmap=cmaps[ki])
-                ax_usr.set_yticks([])
-                ax_usr.set_xticks([])
-                ax_usr.text(0.01,0.88, str(box_sizes[bi])+'-'+str(data[bi].shape[1]),
-                              transform=ax_usr.transAxes, size=24)
-                ax_usr.axis('off')
-                
-                if bi<len(fake):
-                    ax_usr_fake.imshow(fake[bi][fake_indices[li],:,:,ki],
-                                       cmap=cmaps[ki])
-                    ax_usr_fake.set_xticks([])
-                    ax_usr_fake.set_yticks([])
-                    ax_usr_fake.text(0.01, 0.88, str(np.int32(box_sizes[0]))+'-'+str(fake[bi].shape[1]),
-                                  transform=ax_usr_fake.transAxes, size=24)
-                    ax_usr_fake.axis('off')
-
-        plt.tight_layout()
-        plt.savefig(output_dir+key+'_slice_epoch'+str(epoch+1)+'.jpg')
-        plt.close()
-        
-    
-    
-    if len(keys_list)>1:
-        fig, ax = plt.subplots(num_img*2, len(keys_list), figsize=(len(keys_list)*6, num_img*10))
-        plt.subplots_adjust(wspace=0.0, hspace=0.05)
-        
-            
-        for ki, key in enumerate(keys_list):
-              for li, index in enumerate(indices):
-          
-                  ax[li,ki].imshow(data[0][index,...,ki],
-                                   cmap=cmaps[ki])
-                  ax[li,ki].set_yticks([])
-                  ax[li,ki].set_xticks([])
-                  ax[li,ki].text(0.01, 0.88, str(np.int32(box_sizes[0]))+'-'+str(data[bi].shape[1]), 
-                                  transform=ax[li,ki].transAxes, size=24)
-                  ax[li,bi].axis('off')
-                              
-                  ax[li+num_img,ki].imshow(fake[-1][fake_indices[li],:,:,ki], 
-                                           cmap=cmaps[ki])
-                  ax[li+num_img,ki].set_xticks([])
-                  ax[li+num_img,ki].set_yticks([])
-                  ax[li+num_img,ki].text(0.01, 0.88,str(np.int32(box_sizes[0]))+'-'+str(fake[-1].shape[1]),
-                                                transform=ax[li+num_img,ki].transAxes, size=24)
-                  ax[li+num_img,ki].axis('off')
-    
-        plt.tight_layout()
-        plt.savefig(output_dir+'slice_epoch'+str(epoch+1)+'.jpg')
-        plt.close()
-
-    
 
 
 
@@ -282,31 +200,3 @@ def plot_training_history(output_dir):
     
     fig.savefig(output_dir+'training.pdf',format='pdf', 
                 dpi=90, bbox_inches = 'tight')
-    
-
-
-# Visualize Latent-space
-def visualize_latent_space(latent_vectors, fake_data, latent_dim=32):
-    
-    # Plot each panel separately
-    fig, axes = plt.subplots(latent_dim, 1, figsize=(20, latent_dim*3))
-    fig.subplots_adjust(wspace=0, hspace=0)
-    
-    for vi in range(latent_dim):
-        
-        feature = 1
-        
-        # Sort skewers based on the value of a given latent_vector
-        sorted_indices = np.argsort(latent_vectors[:, vi])
-        random_index = np.random.choice(len(sorted_indices), size=5, replace=False)
-        out = fake_data[sorted_indices[random_index],:, feature]
-        
-        for los in range(out.shape[0]):
-    
-            axes[vi].plot(out[los])
-            axes[vi].set_xticks([])
-            axes[vi].set_yticks([])
-    
-    plt.tight_layout()
-    plt.show()
-
